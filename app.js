@@ -1,0 +1,1 @@
+console.log("Inicio de la aplicación");

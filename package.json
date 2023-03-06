@@ -1,0 +1,13 @@
+{
+  "name": "friendzone",
+  "version": "1.0.0",
+  "description": "Una aplicación para visualizar la ubicación de tus amigos en un canva en tiempo real.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": ["socket.io", "canva", "node"],
+  "author": "",
+  "license": "ISC"
+}
