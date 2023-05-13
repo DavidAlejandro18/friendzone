@@ -22,6 +22,10 @@ class Server {
     socket() {
         this.io.on('connection', (socket) => {
             console.log('Cliente conectado', socket.id);
+
+            socket.on("move", (coords) => {
+                socket.broadcast.emit("move", coords);
+            });
         });
     }
 
