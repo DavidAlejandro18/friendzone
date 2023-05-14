@@ -24,7 +24,11 @@ class Server {
             console.log('Cliente conectado', socket.id);
 
             socket.on("move", (coords) => {
-                socket.broadcast.emit("move", coords);
+                socket.broadcast.emit("move", {coords, id: socket.id});
+            });
+
+            socket.on('disconnect', () => {
+                socket.broadcast.emit("offline-user", {id: socket.id});
             });
         });
     }
