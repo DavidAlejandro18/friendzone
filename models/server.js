@@ -14,8 +14,6 @@ class Server {
 
         this.middlewares();
 
-        this.routes();
-
         this.socket();
     }
 
@@ -23,8 +21,10 @@ class Server {
         this.io.on('connection', (socket) => {
             console.log('Cliente conectado', socket.id);
 
-            socket.on("move", (coords) => {
-                socket.broadcast.emit("move", {coords, id: socket.id});
+            socket.on("move", (user) => {
+                let { coords, username, color } = user;
+
+                socket.broadcast.emit("move", { username, coords, color, id: socket.id });
             });
 
             socket.on('disconnect', () => {
@@ -36,10 +36,6 @@ class Server {
     middlewares() {
         this.app.use(cors());
         this.app.use(express.static('public'));
-    }
-
-    routes() {
-        this.app.use('/', require('../routes/pages'));
     }
 
     listen() {

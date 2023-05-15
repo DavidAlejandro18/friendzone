@@ -6,7 +6,10 @@ let lastMouseX = 0;
 let lastMouseY = 0;
 
 socket.on("move", (user) => {
-    points[user.id] = {x: user.coords.x, y: user.coords.y};
+    let { x, y } = user.coords;
+    let { username, color } = user;
+
+    points[user.id] = { x, y, username, color };
 });
 
 socket.on("offline-user", (user) => {
@@ -21,12 +24,22 @@ function setup() {
 function draw() {
     background(220);
 
-    fill(0, 0, 255);
-    ellipse(mouseX, mouseY, 10, 10);
-    text("Owner", mouseX + 5, mouseY - 5);
-    
-    if((mouseX != lastMouseX || mouseY != lastMouseY) && (mouseX < width && mouseX > 0 && mouseY < height && mouseY > 0)) {
-        socket.emit("move", {x: mouseX, y: mouseY});
+    let localUser = localStorage.getItem("local-user-fz");
+
+    if(localUser) {
+        localUser = JSON.parse(localUser);
+
+        fill(localUser.color);
+        ellipse(mouseX, mouseY, 10, 10);
+        text(localUser.username, mouseX + 5, mouseY - 5);
+        
+        if((mouseX != lastMouseX || mouseY != lastMouseY) && (mouseX < width && mouseX > 0 && mouseY < height && mouseY > 0)) {
+            socket.emit("move", {
+                username: localUser.username, 
+                color: localUser.color,
+                coords: {x: mouseX, y: mouseY}
+            });
+        }
     }
     
     lastMouseX = mouseX;
@@ -34,9 +47,9 @@ function draw() {
 
     if (Object.keys(points).length > 0) {
         for (let key in points) {
-            fill(255, 0, 0);
+            fill(points[key].color);
             ellipse(points[key].x, points[key].y, 10, 10);
-            text(key, points[key].x + 5, points[key].y - 5);
+            text(points[key].username, points[key].x + 5, points[key].y - 5);
         }
     }
 }
